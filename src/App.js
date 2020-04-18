@@ -1,10 +1,26 @@
 import React from "react";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Container,
+  CssBaseline,
+} from "@material-ui/core";
+import CheckIn from "./components/CheckIn";
 
 function App() {
   return (
-    <div className="App">
-      <h1>Hello World</h1>
-    </div>
+    <>
+      <CssBaseline />
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h4">Porton Health</Typography>
+        </Toolbar>
+      </AppBar>
+      <Container>
+        <CheckIn />
+      </Container>
+    </>
   );
 }
 
