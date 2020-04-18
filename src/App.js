@@ -1,26 +1,16 @@
 import React from "react";
-import {
-  AppBar,
-  Toolbar,
-  Typography,
-  Container,
-  CssBaseline,
-} from "@material-ui/core";
-import CheckIn from "./components/CheckIn";
+import { Route, Switch } from "react-router-dom";
+import { Layout, Welcome, CheckIn, Appointment } from "./components";
 
 function App() {
   return (
-    <>
-      <CssBaseline />
-      <AppBar position="static">
-        <Toolbar>
-          <Typography variant="h4">Porton Health</Typography>
-        </Toolbar>
-      </AppBar>
-      <Container>
-        <CheckIn />
-      </Container>
-    </>
+    <Layout>
+      <Switch>
+        <Route exact path="/" component={Welcome} />
+        <Route exact path="/checkin" component={CheckIn} />
+        <Route exact path="/appointment" component={Appointment} />
+      </Switch>
+    </Layout>
   );
 }
 
