@@ -1,6 +1,7 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { Layout, Welcome, CheckIn, Appointment } from "./components";
+import { Welcome, CheckIn, Appointment } from "./pages";
+import Layout from "./Layout";
 
 function App() {
   return (
