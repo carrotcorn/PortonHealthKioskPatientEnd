@@ -1,6 +1,7 @@
 import React from "react";
-import { TextField, Paper, Typography } from "@material-ui/core";
+import { TextField, Paper, Typography, Button } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
+import { useForm } from "react-hook-form";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -20,35 +21,111 @@ const useStyles = makeStyles((theme) => ({
       margin: theme.spacing(1),
       flex: 1,
     },
+    "& .MuiButton-root": {
+      width: "100%",
+      maxWidth: "200px",
+      margin: "30px auto 0",
+    },
   },
 }));
 
 function CheckIn() {
   const styles = useStyles();
+  const { register, handleSubmit, errors } = useForm();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
+
   return (
     <Paper className={styles.root}>
       <Typography variant="h4" align="center">
         Please Provide Your Information
       </Typography>
-      <form className={styles.form}>
+      <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
         <div>
-          <TextField label="First Name"></TextField>
-          <TextField label="Last Name"></TextField>
           <TextField
-            id="date"
+            inputRef={register({ required: true, minLength: 2 })}
+            name="firstName"
+            label="First Name"
+            error={!!errors.firstName}
+            helperText={
+              errors.firstName &&
+              ((errors.firstName.type === "required" && "Required") ||
+                (errors.firstName.type === "minLength" &&
+                  "At least 2 characters are required"))
+            }
+          />
+          <TextField
+            inputRef={register({ required: true, minLength: 2 })}
+            name="lastName"
+            label="Last Name"
+            error={!!errors.lastName}
+            helperText={
+              errors.lastName &&
+              ((errors.lastName.type === "required" && "Required") ||
+                (errors.lastName.type === "minLength" &&
+                  "At least 2 characters are required"))
+            }
+          />
+          <TextField
+            inputRef={register}
+            name="birthday"
             label="Birthday"
             type="date"
-            defaultValue="2017-05-24"
             InputLabelProps={{
               shrink: true,
             }}
           />
         </div>
-        <TextField label="Street Address"></TextField>
+        <TextField
+          inputRef={register({ required: true })}
+          name="streetAddress"
+          label="Street Address"
+          error={!!errors.streetAddress}
+          helperText={
+            errors.streetAddress &&
+            errors.streetAddress.type === "required" &&
+            "Required"
+          }
+        />
         <div>
-          <TextField label="City"></TextField>
-          <TextField label="Province"></TextField>
-          <TextField label="Postal Code"></TextField>
+          <TextField
+            inputRef={register({ required: true })}
+            name="city"
+            label="City"
+            error={!!errors.city}
+            helperText={
+              errors.city && errors.city.type === "required" && "Required"
+            }
+          />
+          <TextField
+            inputRef={register({ required: true })}
+            name="province"
+            label="Province"
+            error={!!errors.province}
+            helperText={
+              errors.province &&
+              errors.province.type === "required" &&
+              "Required"
+            }
+          />
+          <TextField
+            inputRef={register({ required: true })}
+            name="postalCode"
+            label="Postal Code"
+            error={!!errors.postalCode}
+            helperText={
+              errors.postalCode &&
+              errors.postalCode.type === "required" &&
+              "Required"
+            }
+          />
+        </div>
+        <div>
+          <Button type="submit" variant="contained" color="primary">
+            Submit
+          </Button>
         </div>
       </form>
     </Paper>
