@@ -7,7 +7,8 @@ import {
   MenuItem,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
+import { DatePicker } from "@material-ui/pickers";
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -105,7 +106,7 @@ const provinces = [
 
 function CheckIn() {
   const styles = useStyles();
-  const { register, handleSubmit, errors } = useForm();
+  const { register, handleSubmit, errors, control } = useForm();
 
   const onSubmit = (data) => {
     console.log(data);
@@ -142,14 +143,18 @@ function CheckIn() {
                   "At least 2 characters are required"))
             }
           />
-          <TextField
-            inputRef={register}
+          <Controller
+            as={
+              <DatePicker
+                disableFuture
+                openTo="year"
+                format="dd/MM/yyyy"
+                label="Date of birth"
+                views={["year", "month", "date"]}
+              />
+            }
+            control={control}
             name="birthday"
-            label="Birthday"
-            type="date"
-            InputLabelProps={{
-              shrink: true,
-            }}
           />
         </div>
         <TextField
@@ -176,7 +181,7 @@ function CheckIn() {
           {/* Textfield select warning in strict mode https://github.com/mui-org/material-ui/issues/13394 */}
           <TextField
             select
-            inputRef={(e) => e && register(e.node, { required: true })}
+            inputRef={(ref) => ref && register(ref.node, { required: true })}
             name="province"
             label="Province"
             defaultValue=""
@@ -196,7 +201,7 @@ function CheckIn() {
           <TextField
             inputRef={register({
               required: true,
-              pattern: /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z] *?[0-9][A-Z][0-9]$/i,
+              pattern: /^(?!.*[DFIOQU])[A-VXY][0-9][A-Z] *?[0-9][A-Z][0-9] *?$/i,
             })}
             name="postalCode"
             label="Postal Code"
