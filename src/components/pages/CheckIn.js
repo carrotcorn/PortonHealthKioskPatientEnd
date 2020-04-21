@@ -1,5 +1,11 @@
 import React from "react";
-import { TextField, Paper, Typography, Button } from "@material-ui/core";
+import {
+  TextField,
+  Paper,
+  Typography,
+  Button,
+  MenuItem,
+} from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 
@@ -28,6 +34,74 @@ const useStyles = makeStyles((theme) => ({
     },
   },
 }));
+
+const provinces = [
+  {
+    // Alberta
+    value: "AB",
+    label: "AB",
+  },
+  {
+    // British Columbia
+    value: "BC",
+    label: "BC",
+  },
+  {
+    // Manitoba
+    value: "MB",
+    label: "MB",
+  },
+  {
+    // New Brunswick
+    value: "NB",
+    label: "NB",
+  },
+  {
+    // Newfoundland
+    value: "NL",
+    label: "NL",
+  },
+  {
+    // Nova Scotia
+    value: "NS",
+    label: "NS",
+  },
+  {
+    // Northwest Territories
+    value: "NT",
+    label: "NT",
+  },
+  {
+    // Nunavut
+    value: "NU",
+    label: "NU",
+  },
+  {
+    // Ontario
+    value: "ON",
+    label: "ON",
+  },
+  {
+    // Prince Edward Island
+    value: "PE",
+    label: "PE",
+  },
+  {
+    // Quebec
+    value: "QC",
+    label: "QC",
+  },
+  {
+    // Saskatchewan
+    value: "SK",
+    label: "SK",
+  },
+  {
+    // Yukon
+    value: "YT",
+    label: "YT",
+  },
+];
 
 function CheckIn() {
   const styles = useStyles();
@@ -99,17 +173,26 @@ function CheckIn() {
               errors.city && errors.city.type === "required" && "Required"
             }
           />
+          {/* Textfield select warning in strict mode https://github.com/mui-org/material-ui/issues/13394 */}
           <TextField
-            inputRef={register({ required: true })}
+            select
+            inputRef={(e) => e && register(e.node, { required: true })}
             name="province"
             label="Province"
+            defaultValue=""
             error={!!errors.province}
             helperText={
               errors.province &&
               errors.province.type === "required" &&
               "Required"
             }
-          />
+          >
+            {provinces.map((option) => (
+              <MenuItem key={option.value} value={option.value}>
+                {option.label}
+              </MenuItem>
+            ))}
+          </TextField>
           <TextField
             inputRef={register({
               required: true,
