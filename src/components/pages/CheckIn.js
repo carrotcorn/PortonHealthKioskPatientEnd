@@ -18,21 +18,21 @@ const useStyles = makeStyles((theme) => ({
   form: {
     margin: "30px auto 0",
     maxWidth: "700px",
-    "& div": {
-      display: "flex",
-      [theme.breakpoints.down("xs")]: {
-        flexDirection: "column",
-      },
+  },
+  formRow: {
+    display: "flex",
+    [theme.breakpoints.down("xs")]: {
+      flexDirection: "column",
     },
-    "& .MuiTextField-root": {
+    "& .MuiFormControl-root": {
       margin: theme.spacing(1),
       flex: 1,
     },
-    "& .MuiButton-root": {
-      width: "100%",
-      maxWidth: "200px",
-      margin: "30px auto 0",
-    },
+  },
+  submitBtn: {
+    display: "block",
+    width: "200px",
+    margin: "30px auto 0",
   },
 }));
 
@@ -118,7 +118,7 @@ function CheckIn() {
         Please Provide Your Information
       </Typography>
       <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-        <div>
+        <div className={styles.formRow}>
           <TextField
             inputRef={register({ required: true, minLength: 2 })}
             name="firstName"
@@ -155,20 +155,29 @@ function CheckIn() {
             }
             control={control}
             name="birthday"
+            rules={{ required: true }}
+            error={!!errors.birthday}
+            helperText={
+              errors.birthday &&
+              errors.birthday.type === "required" &&
+              "Required"
+            }
           />
         </div>
-        <TextField
-          inputRef={register({ required: true })}
-          name="streetAddress"
-          label="Street Address"
-          error={!!errors.streetAddress}
-          helperText={
-            errors.streetAddress &&
-            errors.streetAddress.type === "required" &&
-            "Required"
-          }
-        />
-        <div>
+        <div className={styles.formRow}>
+          <TextField
+            inputRef={register({ required: true })}
+            name="streetAddress"
+            label="Street Address"
+            error={!!errors.streetAddress}
+            helperText={
+              errors.streetAddress &&
+              errors.streetAddress.type === "required" &&
+              "Required"
+            }
+          />
+        </div>
+        <div className={styles.formRow}>
           <TextField
             inputRef={register({ required: true })}
             name="city"
@@ -214,7 +223,12 @@ function CheckIn() {
           />
         </div>
         <div>
-          <Button type="submit" variant="contained" color="primary">
+          <Button
+            className={styles.submitBtn}
+            type="submit"
+            variant="contained"
+            color="primary"
+          >
             Submit
           </Button>
         </div>
