@@ -5,6 +5,7 @@ import AssignmentIcon from "@material-ui/icons/Assignment";
 import Edit from "@material-ui/icons/Edit";
 import LocalHospital from "@material-ui/icons/LocalHospital";
 import Person from "@material-ui/icons/Person";
+import { Link } from "react-router-dom";
 
 const useStyles = makeStyles({
   page: {
@@ -41,6 +42,8 @@ function Welcome() {
           color="primary"
           className={classes.optionBtn}
           endIcon={<AssignmentIcon />}
+          component={Link}
+          to="/checkin"
         >
           <Typography variant="h5">Check In</Typography>
         </Button>
