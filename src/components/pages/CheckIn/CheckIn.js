@@ -11,6 +11,7 @@ import {
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { format, addMinutes } from "date-fns";
+import CheckInDialog from "./CheckInDialog";
 
 function createAppointment(id, firstName, lastInitial, attending) {
   const randTime = addMinutes(Date.now(), Math.floor(Math.random() * 15 + 1));
@@ -23,22 +24,37 @@ function CheckIn() {
   const [appointments, setAppointments] = useState([]);
 
   useEffect(() => {
-    setAppointments([
-      createAppointment(1, "Abigail", "A.", "Walk In"),
-      createAppointment(2, "Lucas", "J.", "Dr. Johnson"),
-      createAppointment(3, "Thomas", "F.", "Dr. Armstrong"),
-      createAppointment(4, "Peter", "C.", "Dr. Squire"),
-      createAppointment(5, "Eric", "B.", "Dr. Smith"),
-      createAppointment(6, "Andrea", "F.", "Dr. Toledo"),
-    ]);
+    setAppointments(
+      [
+        createAppointment(1, "Abigail", "A.", "Walk In"),
+        createAppointment(2, "Lucas", "J.", "Dr. Johnson"),
+        createAppointment(3, "Thomas", "F.", "Dr. Armstrong"),
+        createAppointment(4, "Peter", "C.", "Dr. Squire"),
+        createAppointment(5, "Eric", "B.", "Dr. Smith"),
+        createAppointment(6, "Andrea", "F.", "Dr. Toledo"),
+      ].sort((a, b) => a.time > b.time)
+    );
   }, []);
+
+  // dialog management
+  const [selectedAppointment, setSelectedAppointment] = useState({});
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+
+  const handleCloseDialog = () => {
+    setIsDialogOpen(!isDialogOpen);
+  };
+
+  const handleClick = (appointment) => {
+    setSelectedAppointment(appointment);
+    setIsDialogOpen(true);
+  };
 
   return (
     <Paper className={styles.root}>
       <Typography variant="h4" align="center">
         Please Select an Upcoming Appointment
       </Typography>
-      <TableContainer component={Paper}>
+      <TableContainer className={styles.table} component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
@@ -49,7 +65,12 @@ function CheckIn() {
           </TableHead>
           <TableBody>
             {appointments.map((appointment) => (
-              <TableRow key={appointment.id}>
+              <TableRow
+                classes={{ root: styles.tableRow }}
+                hover
+                key={appointment.id}
+                onClick={() => handleClick(appointment)}
+              >
                 <TableCell component="th" scope="row">
                   {`${appointment.firstName} ${appointment.lastInitial}`}
                 </TableCell>
@@ -60,6 +81,11 @@ function CheckIn() {
           </TableBody>
         </Table>
       </TableContainer>
+      <CheckInDialog
+        appointment={selectedAppointment}
+        open={isDialogOpen}
+        handleClose={handleCloseDialog}
+      />
     </Paper>
   );
 }
@@ -68,6 +94,14 @@ const useStyles = makeStyles((theme) => ({
   root: {
     marginTop: theme.spacing(4),
     padding: theme.spacing(2),
+    maxWidth: 800,
+    margin: "0 auto",
+  },
+  table: {
+    marginTop: theme.spacing(4),
+  },
+  tableRow: {
+    cursor: "pointer",
   },
 }));
 
