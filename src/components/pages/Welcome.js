@@ -52,7 +52,7 @@ function Welcome() {
           size="large"
           variant="contained"
           className={classes.optionBtn}
-          endIcon={<Edit />}
+          endIcon={<LocalHospital />}
         >
           <Typography variant="h5">Make An Appointment</Typography>
         </Button>
@@ -61,7 +61,7 @@ function Welcome() {
           size="large"
           variant="contained"
           className={classes.optionBtn}
-          endIcon={<LocalHospital />}
+          endIcon={<Edit />}
         >
           <Typography variant="h5">Change an Appointment</Typography>
         </Button>
