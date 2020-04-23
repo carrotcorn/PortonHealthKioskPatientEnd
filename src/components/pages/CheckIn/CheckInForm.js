@@ -116,6 +116,8 @@ function CheckInForm() {
           type="submit"
           variant="contained"
           color="primary"
+          // component={Link}
+          // to="/confirmation"
         >
           Submit
         </Button>

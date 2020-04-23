@@ -1,6 +1,6 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import { Welcome, CheckIn, Appointment } from "./pages";
+import { Welcome, CheckIn, Appointment, Confirmation } from "./pages";
 import Layout from "./Layout";
 
 function App() {
@@ -10,6 +10,7 @@ function App() {
         <Route exact path="/" component={Welcome} />
         <Route exact path="/checkin" component={CheckIn} />
         <Route exact path="/appointment" component={Appointment} />
+        <Route exact path="/confirmation" component={Confirmation} />
       </Switch>
     </Layout>
   );
