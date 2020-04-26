@@ -1,4 +1,5 @@
 import PostalCode from "./PostalCode";
 import Province from "./Province";
+import City from "./City";
 
-export { PostalCode, Province };
+export { PostalCode, Province, City };
