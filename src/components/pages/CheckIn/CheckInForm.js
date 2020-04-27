@@ -16,7 +16,7 @@ const PROVINCE = "PROVINCE";
 const POSTAL_CODE = "POSTAL_CODE";
 
 const formConfig = [
-  { inputType: FIRST_NAME, name: "fName", active: true },
+  { inputType: FIRST_NAME, name: "firstName", active: true },
   { inputType: LAST_NAME, name: "lastName", active: false },
   { inputType: BIRTHDAY, name: "birthday", active: false },
   { inputType: STREET_ADDRESS, name: "streetAddress", active: false },
@@ -35,7 +35,7 @@ function CheckInForm() {
 
   return (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-      <div className={styles.formRow}>
+      <div className={styles.inputContainer}>
         {formConfig
           .filter((inputConfig) => inputConfig.active)
           .map(({ inputType, name }, index) =>
@@ -45,6 +45,7 @@ function CheckInForm() {
               control,
               name,
               key: index,
+              classes: { root: styles.input },
             })
           )}
       </div>
@@ -67,16 +68,13 @@ const useStyles = makeStyles((theme) => ({
     margin: "30px auto 0",
     maxWidth: "700px",
   },
-  formRow: {
+  inputContainer: {
     display: "flex",
-    [theme.breakpoints.down("xs")]: {
-      flexDirection: "column",
-      minWidth: "300px",
-    },
-    "& .MuiFormControl-root": {
-      margin: theme.spacing(1),
-      flex: 1,
-    },
+    flexDirection: "column",
+  },
+  input: {
+    minWidth: "300px",
+    margin: theme.spacing(1),
   },
   submitBtn: {
     display: "block",
