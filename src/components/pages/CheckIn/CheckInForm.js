@@ -1,53 +1,47 @@
-import React from "react";
-import { Button } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import { Button, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import formInputFactory from "../../form-fields/FormInputFactory";
+import {
+  getUserCheckInFields,
+  getDefaultCheckInFields,
+} from "../../../util/API";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
-
-// input types
-const FIRST_NAME = "FIRST_NAME";
-const LAST_NAME = "LAST_NAME";
-const BIRTHDAY = "BIRTHDAY";
-const STREET_ADDRESS = "STREET_ADDRESS";
-const CITY = "CITY";
-const PROVINCE = "PROVINCE";
-const POSTAL_CODE = "POSTAL_CODE";
-
-const formConfig = [
-  { inputType: FIRST_NAME, name: "firstName", active: true },
-  { inputType: LAST_NAME, name: "lastName", active: false },
-  { inputType: BIRTHDAY, name: "birthday", active: false },
-  { inputType: STREET_ADDRESS, name: "streetAddress", active: false },
-  { inputType: CITY, name: "city", active: false },
-  { inputType: PROVINCE, name: "province", active: false },
-  { inputType: POSTAL_CODE, name: "postalCode", active: true },
-];
 
 function CheckInForm() {
   const styles = useStyles();
   const { register, handleSubmit, errors, control } = useForm();
+  const [formFields, setFormFields] = useState();
+
+  useEffect(() => {
+    const fields = getUserCheckInFields();
+
+    if (fields) {
+      setFormFields(fields);
+    } else {
+      setFormFields(getDefaultCheckInFields());
+    }
+  }, []);
 
   const onSubmit = (data) => {
     console.log(data);
   };
 
-  return (
+  return formFields ? (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
       <div className={styles.inputContainer}>
-        {formConfig
-          .filter((inputConfig) => inputConfig.active)
-          .map(({ inputType, name }, index) =>
-            formInputFactory(inputType, {
-              register,
-              errors,
-              control,
-              name,
-              key: index,
-              classes: { root: styles.input },
-            })
-          )}
+        {formFields.map(({ inputType, name }, index) =>
+          formInputFactory(inputType, {
+            register,
+            errors,
+            control,
+            name,
+            key: index,
+            classes: { root: styles.input },
+          })
+        )}
       </div>
       <div>
         <Button
@@ -60,6 +54,8 @@ function CheckInForm() {
         </Button>
       </div>
     </form>
+  ) : (
+    <CircularProgress />
   );
 }
 
