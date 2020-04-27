@@ -2,9 +2,10 @@ import React from "react";
 import { TextField, MenuItem } from "@material-ui/core";
 import { Controller } from "react-hook-form";
 
-function Province({ control, errors }) {
+function Province({ control, errors, register, ...rest }) {
   return (
     <Controller
+      {...rest}
       as={
         <TextField select label="Province">
           {provinces.map((option) => (
@@ -14,7 +15,6 @@ function Province({ control, errors }) {
           ))}
         </TextField>
       }
-      name="province"
       defaultValue=""
       control={control}
       rules={{ required: true }}

@@ -2,9 +2,10 @@ import React from "react";
 import { DatePicker } from "@material-ui/pickers";
 import { Controller } from "react-hook-form";
 
-function Birthday({ control, errors }) {
+function Birthday({ control, errors, register, ...rest }) {
   return (
     <Controller
+      {...rest}
       as={
         <DatePicker
           disableFuture
@@ -15,7 +16,6 @@ function Birthday({ control, errors }) {
         />
       }
       control={control}
-      name="birthday"
       rules={{ required: true }}
       error={!!errors}
       helperText={errors && errors.type === "required" && "Required"}

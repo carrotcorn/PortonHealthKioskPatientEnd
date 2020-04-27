@@ -1,11 +1,11 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
 
-function LastName({ register, errors }) {
+function LastName({ register, errors, ...rest }) {
   return (
     <TextField
+      {...rest}
       inputRef={register({ required: true, minLength: 2 })}
-      name="lastName"
       label="Last Name"
       error={!!errors}
       helperText={

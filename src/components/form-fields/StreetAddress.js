@@ -1,11 +1,11 @@
 import React from "react";
 import { TextField } from "@material-ui/core";
 
-function StreetAddress({ register, errors }) {
+function StreetAddress({ register, errors, ...rest }) {
   return (
     <TextField
+      {...rest}
       inputRef={register({ required: true })}
-      name="streetAddress"
       label="Street Address"
       error={!!errors}
       helperText={errors && errors.type === "required" && "Required"}
