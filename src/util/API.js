@@ -38,8 +38,12 @@ export const getUserCheckInFields = () => {
 
 // These would be automatically set when the clinic user is first created
 export const getDefaultCheckInFields = () => {
-  return [
-    { inputType: LAST_NAME, name: "lastName", label: "Last Name" },
-    { inputType: BIRTHDAY, name: "birthday", label: "Birthday" },
-  ];
+  localStorage.setItem(
+    CHECK_IN_FIELDS,
+    JSON.stringify([
+      { inputType: LAST_NAME, name: "lastName", label: "Last Name" },
+      { inputType: BIRTHDAY, name: "birthday", label: "Birthday" },
+    ])
+  );
+  return getUserCheckInFields();
 };
