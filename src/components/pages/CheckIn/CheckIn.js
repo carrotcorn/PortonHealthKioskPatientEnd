@@ -8,10 +8,12 @@ import {
   TableHead,
   TableRow,
   TableContainer,
+  Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { format, addMinutes } from "date-fns";
 import CheckInDialog from "./CheckInDialog";
+import FormFieldDialog from "./FormFieldDialog";
 
 function createAppointment(id, firstName, lastInitial, attending) {
   const randTime = addMinutes(Date.now(), Math.floor(Math.random() * 15 + 1));
@@ -39,9 +41,14 @@ function CheckIn() {
   // dialog management
   const [selectedAppointment, setSelectedAppointment] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
 
   const handleCloseDialog = () => {
-    setIsDialogOpen(!isDialogOpen);
+    setIsDialogOpen(false);
+  };
+
+  const handleCloseFormDialog = () => {
+    setIsFormDialogOpen(false);
   };
 
   const handleClick = (appointment) => {
@@ -81,10 +88,17 @@ function CheckIn() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Button variant="contained" onClick={() => setIsFormDialogOpen(true)}>
+        Configure Check In Form
+      </Button>
       <CheckInDialog
         appointment={selectedAppointment}
         open={isDialogOpen}
         handleClose={handleCloseDialog}
+      />
+      <FormFieldDialog
+        open={isFormDialogOpen}
+        handleClose={handleCloseFormDialog}
       />
     </Paper>
   );
@@ -99,6 +113,7 @@ const useStyles = makeStyles((theme) => ({
   },
   table: {
     marginTop: theme.spacing(4),
+    marginBottom: theme.spacing(4),
   },
   tableRow: {
     cursor: "pointer",

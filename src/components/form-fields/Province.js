@@ -1,15 +1,26 @@
 import React from "react";
 import { TextField, MenuItem } from "@material-ui/core";
+import { Controller } from "react-hook-form";
 
-function SelectProvince(props) {
+function Province({ control, errors, register, ...rest }) {
   return (
-    <TextField {...props} select label="Province">
-      {provinces.map((option) => (
-        <MenuItem key={option.value} value={option.value}>
-          {option.label}
-        </MenuItem>
-      ))}
-    </TextField>
+    <Controller
+      {...rest}
+      as={
+        <TextField select label="Province">
+          {provinces.map((option) => (
+            <MenuItem key={option.value} value={option.value}>
+              {option.label}
+            </MenuItem>
+          ))}
+        </TextField>
+      }
+      defaultValue=""
+      control={control}
+      rules={{ required: true }}
+      error={!!errors}
+      helperText={errors && errors.type === "required" && "Required"}
+    />
   );
 }
 
@@ -81,4 +92,4 @@ const provinces = [
   },
 ];
 
-export default SelectProvince;
+export default Province;
