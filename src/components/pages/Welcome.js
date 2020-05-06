@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Typography, Button, Box } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import AssignmentIcon from "@material-ui/icons/Assignment";
@@ -6,6 +6,9 @@ import Edit from "@material-ui/icons/Edit";
 import LocalHospital from "@material-ui/icons/LocalHospital";
 import Person from "@material-ui/icons/Person";
 import { Link } from "react-router-dom";
+import { UserContext } from "../Contexts";
+import { getClinic } from "../../util/API";
+import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles({
   page: {
@@ -30,10 +33,37 @@ const useStyles = makeStyles({
 
 function Welcome() {
   const classes = useStyles();
+  const userContext = useContext(UserContext);
+  const [clinic, setClinic] = useState();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchClinic = async () => {
+      console.log(userContext);
+      if (userContext.user) {
+        try {
+          const response = await getClinic(userContext.user);
+          if (response.success) {
+            console.log(response.result[0]);
+            setClinic(response.result[0]);
+          }
+          setLoading(false);
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    };
+    fetchClinic();
+  }, [userContext]);
+
+  if (loading || !clinic) {
+    return <CircularProgress />;
+  }
+
   return (
     <div className={classes.page}>
       <Typography variant="h2" align="center" className={classes.welcome}>
-        Welcome To Our Clinic
+        Welcome To {clinic.name}
       </Typography>
       <Box className={classes.optionsContainer}>
         <Button
