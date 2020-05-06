@@ -1,18 +1,48 @@
 /* global Backend */
+const backend = new Backend("http://localhost:7001");
 
-const BASE_URL = "http://localhost:7001";
-const backend = new Backend(BASE_URL);
+export const getAllCheckInFields = async () => {
+  let fields;
 
-export const getCurrentUser = async () => {
-  return backend.get("/user/current");
+  const response = await backend.get('/checkinformfield/find');
+
+  if (response.success)  
+    fields = response.result;
+  else 
+    throw response.error;
+
+  return fields;
 };
 
-export const login = async (username, password) => {
-  return backend.post("/user/login", { username, password });
+export const getUserCheckInFields = async (id) => {
+  let fields;
+
+  const clinic = await getClinicByOwner(id);
+  const response = await backend.post('/checkinformfield/find', { conditions: { $in: clinic.formFields } });  
+  if (response.success)  
+    fields = response.result;
+  else 
+    throw response.error;
+
+  return fields;
 };
 
-export const getClinic = async (ownerId) => {
-  return backend.post("/clinic/find", { conditions: { ownerId } });
+/**
+ *
+ * @param {Array} fields - array of field objects {inputType, name, label}
+ */
+export const setUserCheckInFields = async (clinic, fields) => {
+  console.log(fields);
+  const response = await backend.put('/clinic/update', { conditions: { "_id": clinic._id }, doc: {"formFields": fields} });
+
+  if (response.success)  
+    fields = response.result.formFields;
+  else 
+    throw response.error;
+
+  console.log(response.result);
+
+  return fields;
 };
 
 // input types
@@ -24,37 +54,10 @@ const CITY = "CITY";
 const PROVINCE = "PROVINCE";
 const POSTAL_CODE = "POSTAL_CODE";
 
-export const getAllCheckInFields = () => {
-  return [
-    { inputType: FIRST_NAME, name: "firstName", label: "First Name" },
-    { inputType: LAST_NAME, name: "lastName", label: "Last Name" },
-    { inputType: BIRTHDAY, name: "birthday", label: "Birthday" },
-    {
-      inputType: STREET_ADDRESS,
-      name: "streetAddress",
-      label: "Street Address",
-    },
-    { inputType: CITY, name: "city", label: "City" },
-    { inputType: PROVINCE, name: "province", label: "Province" },
-    { inputType: POSTAL_CODE, name: "postalCode", label: "Postal Code" },
-  ];
-};
-
 const CHECK_IN_FIELDS = "CHECK_IN_FIELDS";
-/**
- *
- * @param {Array} fields - array of field objects {inputType, name, label}
- */
-export const setUserCheckInFields = (fields) => {
-  localStorage.setItem(CHECK_IN_FIELDS, JSON.stringify(fields));
-};
-
-export const getUserCheckInFields = () => {
-  return JSON.parse(localStorage.getItem(CHECK_IN_FIELDS));
-};
 
 // These would be automatically set when the clinic user is first created
-export const getDefaultCheckInFields = () => {
+export const getDefaultCheckInFields = async() => {
   localStorage.setItem(
     CHECK_IN_FIELDS,
     JSON.stringify([
@@ -64,3 +67,104 @@ export const getDefaultCheckInFields = () => {
   );
   return getUserCheckInFields();
 };
+
+export const getCurrentUser = async () => {
+  let user;
+
+  const response = await backend.get('/user/current');
+  if (response.success)  
+    user = response.result;
+  else 
+    throw response.error;
+
+  return user;
+};
+
+export const getUser = async (id) => {
+  let user;
+
+  const response = await backend.post('/user/find', { conditions: { "_id": id}} );
+  if (response.success)  
+    user = response.result;
+  else 
+    throw response.error;
+
+  return user;
+};
+
+export const changeUserStatus = async (id, status) => {
+  let user;
+
+  const response = await backend.put('/user/update', { conditions: { "_id": id }, doc: {"disabled": status} } );
+  if (response.success)  
+    user = response.result;
+  else 
+    throw response.error;
+
+  return user;
+};
+
+export const getClinicByOwner = async (id) => {
+  let clinic;
+
+  const response = await backend.post('/clinic/find', { conditions: { "ownerId": id} });
+  if (response.success)  
+    clinic = response.result;
+  else 
+    throw response.error;
+
+  return clinic[0];
+};
+
+export const getClinics = async () => {
+  let clinics;
+
+  const response = await backend.get('/clinic/find');
+  if (response.success)  
+    clinics = response.result;
+  else 
+    throw response.error;
+
+  return clinics;
+};
+
+export const getAppointmentsByClinic = async (id) => {
+  let appointments;
+
+  const response = await backend.post('/appointment/find', { conditions: { "clinicId": id} });
+  if (response.success)  
+    appointments = response.result;
+  else 
+    throw response.error;
+
+  return appointments;
+};
+
+export const auth = async (data) => {
+  let userId;
+
+  const response = await backend.post('/user/login', data);
+  if (response.success) 
+    userId = response.result;
+  else 
+    throw response.error;  
+
+  return userId;
+};
+
+export const logout = async () => {
+  await backend.post('/user/logout');
+};
+
+export const registerUser = async (data) => {
+  let user;
+
+  const response = await backend.post('/user/create', data);
+  if (response.success)  
+    user = response.result;
+  else 
+    throw response.error;
+
+  return user;
+};
+

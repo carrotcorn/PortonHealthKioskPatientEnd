@@ -7,7 +7,9 @@ import LocalHospital from "@material-ui/icons/LocalHospital";
 import Person from "@material-ui/icons/Person";
 import { Link } from "react-router-dom";
 import { UserContext } from "../Contexts";
-import { getClinic } from "../../util/API";
+import { 
+  getClinicByOwner
+} from "../../util/API";
 import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -33,20 +35,17 @@ const useStyles = makeStyles({
 
 function Welcome() {
   const classes = useStyles();
-  const userContext = useContext(UserContext);
+  const { user } = useContext(UserContext);
   const [clinic, setClinic] = useState();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchClinic = async () => {
-      console.log(userContext);
-      if (userContext.user) {
+      console.log(user);
+      if (user) {
         try {
-          const response = await getClinic(userContext.user);
-          if (response.success) {
-            console.log(response.result[0]);
-            setClinic(response.result[0]);
-          }
+          const clinicData = await getClinicByOwner(user._id);
+          setClinic(clinicData);
           setLoading(false);
         } catch (e) {
           console.log(e);
@@ -54,7 +53,7 @@ function Welcome() {
       }
     };
     fetchClinic();
-  }, [userContext]);
+  }, [user]);
 
   if (loading || !clinic) {
     return <CircularProgress />;
