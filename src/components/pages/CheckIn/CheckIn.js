@@ -11,20 +11,14 @@ import {
   Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { format, addMinutes } from "date-fns";
+import { format, addMinutes, subMinutes } from "date-fns";
 import CheckInDialog from "./CheckInDialog";
 import FormFieldDialog from "./FormFieldDialog";
 import { UserContext } from "../../Contexts";
-import { 
+import {
   getClinicByOwner,
-  getAppointmentsByClinic
+  getAppointmentsByClinic,
 } from "../../../util/API.js";
-
-function createAppointment(id, firstName, lastInitial, attending) {
-  const randTime = addMinutes(Date.now(), Math.floor(Math.random() * 15 + 1));
-  const formattedTime = format(randTime, "p");
-  return { id, firstName, lastInitial, attending, time: formattedTime };
-}
 
 function CheckIn() {
   const styles = useStyles();
@@ -35,29 +29,27 @@ function CheckIn() {
     async function fetchAppointments() {
       try {
         const clinic = await getClinicByOwner(user._id);
-        const appointmentsData = await getAppointmentsByClinic(clinic._id);
+        const appointmentsData = await getAppointmentsByClinic(
+          clinic._id,
+          subMinutes(new Date(), 15),
+          addMinutes(new Date(), 15)
+        );
         console.log(appointmentsData);
         setAppointments(appointmentsData);
-      }
-      catch(e) {
+      } catch (e) {
         console.log(e.message);
       }
     }
-  
+
     fetchAppointments();
-  }, []); 
+  }, [user._id]);
 
   // dialog management
   const [selectedAppointment, setSelectedAppointment] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
-  };
-
-  const handleCloseFormDialog = () => {
-    setIsFormDialogOpen(false);
   };
 
   const handleClick = (appointment) => {
@@ -68,14 +60,14 @@ function CheckIn() {
   return (
     <Paper className={styles.root}>
       <Typography variant="h4" align="center">
-        Please Select an Upcoming Appointment
+        Please Select an Appointment
       </Typography>
       <TableContainer className={styles.table} component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell align="right">Attending</TableCell>
+              <TableCell>Attending</TableCell>
               <TableCell align="right">Time</TableCell>
             </TableRow>
           </TableHead>
@@ -88,26 +80,23 @@ function CheckIn() {
                 onClick={() => handleClick(appointment)}
               >
                 <TableCell component="th" scope="row">
-                  {`${appointment.patientId.givenName} ${appointment.patientId.familyName}`}
+                  {`${
+                    appointment.patientId.givenName
+                  } ${appointment.patientId.familyName.charAt(0)}.`}
                 </TableCell>
-                <TableCell align="right">{appointment.checkedIn ? "Checked-In" : "Not Checked-In"}</TableCell>
-                <TableCell align="right">{appointment.time.start}</TableCell>
+                <TableCell>{appointment.doctorId.doctorname}</TableCell>
+                <TableCell align="right">
+                  {format(new Date(appointment.time.start), "p")}
+                </TableCell>
               </TableRow>
             ))}
           </TableBody>
         </Table>
       </TableContainer>
-      <Button variant="contained" onClick={() => setIsFormDialogOpen(true)}>
-        Configure Check In Form
-      </Button>
       <CheckInDialog
         appointment={selectedAppointment}
         open={isDialogOpen}
         handleClose={handleCloseDialog}
-      />
-      <FormFieldDialog
-        open={isFormDialogOpen}
-        handleClose={handleCloseFormDialog}
       />
     </Paper>
   );
