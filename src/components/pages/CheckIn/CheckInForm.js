@@ -7,6 +7,8 @@ import { UserContext } from "../../Contexts";
 import {
   getUserCheckInFields,
   getDefaultCheckInFields,
+  getAllCheckInFields,
+  getClinicByOwner
 } from "../../../util/API";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
@@ -16,15 +18,39 @@ function CheckInForm() {
   const { register, handleSubmit, errors, control } = useForm();
   const [formFields, setFormFields] = useState();
   const { user } = useContext(UserContext);
+  const [state, setState] = React.useState();
 
   useEffect(() => {
-    const fields = getUserCheckInFields(user._id);
+    (async () => {
+    try {
+      const clinicData = await getClinicByOwner(user._id);
+      const userFields = clinicData.formFields || [];            
+      console.log(userFields);
+      let configuredInputIds = new Set();
+      for (let userField of userFields) {
+        configuredInputIds.add(userField._id);
+      }
+      let fields = await getAllCheckInFields() || [];
+      
+      setState(
+        fields.map((field) => ({
+          ...field,
+          active: configuredInputIds.has(field._id),
+        }))
+      );
 
-    if (fields) {
-      setFormFields(fields);
-    } else {
-      setFormFields(getDefaultCheckInFields());
+      if (fields) {
+        setFormFields(fields);
+      } else {
+        setFormFields(getDefaultCheckInFields());
+      }
+      console.log(formFields);
+
     }
+    catch (e) {
+      console.log(e.message);
+    }
+    })();    
   }, []);
 
   const onSubmit = (data) => {
