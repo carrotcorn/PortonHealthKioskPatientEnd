@@ -20,12 +20,6 @@ import {
   getAppointmentsByClinic,
 } from "../../../util/API.js";
 
-function createAppointment(id, firstName, lastInitial, attending) {
-  const randTime = addMinutes(Date.now(), Math.floor(Math.random() * 15 + 1));
-  const formattedTime = format(randTime, "p");
-  return { id, firstName, lastInitial, attending, time: formattedTime };
-}
-
 function CheckIn() {
   const styles = useStyles();
   const [appointments, setAppointments] = useState([]);
@@ -71,14 +65,14 @@ function CheckIn() {
   return (
     <Paper className={styles.root}>
       <Typography variant="h4" align="center">
-        Please Select an Upcoming Appointment
+        Please Select an Appointment
       </Typography>
       <TableContainer className={styles.table} component={Paper}>
         <Table aria-label="simple table">
           <TableHead>
             <TableRow>
               <TableCell>Name</TableCell>
-              <TableCell align="right">Attending</TableCell>
+              <TableCell>Attending</TableCell>
               <TableCell align="right">Time</TableCell>
             </TableRow>
           </TableHead>
@@ -91,12 +85,14 @@ function CheckIn() {
                 onClick={() => handleClick(appointment)}
               >
                 <TableCell component="th" scope="row">
-                  {`${appointment.patientId.givenName} ${appointment.patientId.familyName}`}
+                  {`${
+                    appointment.patientId.givenName
+                  } ${appointment.patientId.familyName.charAt(0)}.`}
                 </TableCell>
+                <TableCell>{appointment.doctorId.doctorname}</TableCell>
                 <TableCell align="right">
-                  {appointment.checkedIn ? "Checked-In" : "Not Checked-In"}
+                  {format(new Date(appointment.time.start), "p")}
                 </TableCell>
-                <TableCell align="right">{appointment.time.start}</TableCell>
               </TableRow>
             ))}
           </TableBody>
