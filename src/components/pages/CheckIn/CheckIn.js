@@ -11,13 +11,13 @@ import {
   Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
-import { format, addMinutes } from "date-fns";
+import { format, addMinutes, subMinutes } from "date-fns";
 import CheckInDialog from "./CheckInDialog";
 import FormFieldDialog from "./FormFieldDialog";
 import { UserContext } from "../../Contexts";
-import { 
+import {
   getClinicByOwner,
-  getAppointmentsByClinic
+  getAppointmentsByClinic,
 } from "../../../util/API.js";
 
 function createAppointment(id, firstName, lastInitial, attending) {
@@ -35,17 +35,20 @@ function CheckIn() {
     async function fetchAppointments() {
       try {
         const clinic = await getClinicByOwner(user._id);
-        const appointmentsData = await getAppointmentsByClinic(clinic._id);
+        const appointmentsData = await getAppointmentsByClinic(
+          clinic._id,
+          subMinutes(new Date(), 15),
+          addMinutes(new Date(), 15)
+        );
         console.log(appointmentsData);
         setAppointments(appointmentsData);
-      }
-      catch(e) {
+      } catch (e) {
         console.log(e.message);
       }
     }
-  
+
     fetchAppointments();
-  }, []); 
+  }, []);
 
   // dialog management
   const [selectedAppointment, setSelectedAppointment] = useState({});
@@ -90,7 +93,9 @@ function CheckIn() {
                 <TableCell component="th" scope="row">
                   {`${appointment.patientId.givenName} ${appointment.patientId.familyName}`}
                 </TableCell>
-                <TableCell align="right">{appointment.checkedIn ? "Checked-In" : "Not Checked-In"}</TableCell>
+                <TableCell align="right">
+                  {appointment.checkedIn ? "Checked-In" : "Not Checked-In"}
+                </TableCell>
                 <TableCell align="right">{appointment.time.start}</TableCell>
               </TableRow>
             ))}
