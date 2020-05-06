@@ -42,7 +42,7 @@ function CheckIn() {
     }
 
     fetchAppointments();
-  }, []);
+  }, [user._id]);
 
   // dialog management
   const [selectedAppointment, setSelectedAppointment] = useState({});
