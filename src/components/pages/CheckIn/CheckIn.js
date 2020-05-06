@@ -47,14 +47,9 @@ function CheckIn() {
   // dialog management
   const [selectedAppointment, setSelectedAppointment] = useState({});
   const [isDialogOpen, setIsDialogOpen] = useState(false);
-  const [isFormDialogOpen, setIsFormDialogOpen] = useState(false);
 
   const handleCloseDialog = () => {
     setIsDialogOpen(false);
-  };
-
-  const handleCloseFormDialog = () => {
-    setIsFormDialogOpen(false);
   };
 
   const handleClick = (appointment) => {
@@ -98,17 +93,10 @@ function CheckIn() {
           </TableBody>
         </Table>
       </TableContainer>
-      <Button variant="contained" onClick={() => setIsFormDialogOpen(true)}>
-        Configure Check In Form
-      </Button>
       <CheckInDialog
         appointment={selectedAppointment}
         open={isDialogOpen}
         handleClose={handleCloseDialog}
-      />
-      <FormFieldDialog
-        open={isFormDialogOpen}
-        handleClose={handleCloseFormDialog}
       />
     </Paper>
   );
