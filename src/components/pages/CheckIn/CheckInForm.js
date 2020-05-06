@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Button, CircularProgress } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import formInputFactory from "../../form-fields/FormInputFactory";
+import { UserContext } from "../../Contexts";
 import {
   getUserCheckInFields,
   getDefaultCheckInFields,
@@ -14,9 +15,10 @@ function CheckInForm() {
   const styles = useStyles();
   const { register, handleSubmit, errors, control } = useForm();
   const [formFields, setFormFields] = useState();
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    const fields = getUserCheckInFields();
+    const fields = getUserCheckInFields(user._id);
 
     if (fields) {
       setFormFields(fields);

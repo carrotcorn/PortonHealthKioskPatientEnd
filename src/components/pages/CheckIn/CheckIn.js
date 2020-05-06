@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {
   Paper,
   Typography,
@@ -14,6 +14,11 @@ import { makeStyles } from "@material-ui/core/styles";
 import { format, addMinutes } from "date-fns";
 import CheckInDialog from "./CheckInDialog";
 import FormFieldDialog from "./FormFieldDialog";
+import { UserContext } from "../../Contexts";
+import { 
+  getClinicByOwner,
+  getAppointmentsByClinic
+} from "../../../util/API.js";
 
 function createAppointment(id, firstName, lastInitial, attending) {
   const randTime = addMinutes(Date.now(), Math.floor(Math.random() * 15 + 1));
@@ -24,19 +29,23 @@ function createAppointment(id, firstName, lastInitial, attending) {
 function CheckIn() {
   const styles = useStyles();
   const [appointments, setAppointments] = useState([]);
+  const { user } = useContext(UserContext);
 
   useEffect(() => {
-    setAppointments(
-      [
-        createAppointment(1, "Abigail", "A.", "Walk In"),
-        createAppointment(2, "Lucas", "J.", "Dr. Johnson"),
-        createAppointment(3, "Thomas", "F.", "Dr. Armstrong"),
-        createAppointment(4, "Peter", "C.", "Dr. Squire"),
-        createAppointment(5, "Eric", "B.", "Dr. Smith"),
-        createAppointment(6, "Andrea", "F.", "Dr. Toledo"),
-      ].sort((a, b) => a.time > b.time)
-    );
-  }, []);
+    async function fetchAppointments() {
+      try {
+        const clinic = await getClinicByOwner(user._id);
+        const appointmentsData = await getAppointmentsByClinic(clinic._id);
+        console.log(appointmentsData);
+        setAppointments(appointmentsData);
+      }
+      catch(e) {
+        console.log(e.message);
+      }
+    }
+  
+    fetchAppointments();
+  }, []); 
 
   // dialog management
   const [selectedAppointment, setSelectedAppointment] = useState({});
@@ -79,10 +88,10 @@ function CheckIn() {
                 onClick={() => handleClick(appointment)}
               >
                 <TableCell component="th" scope="row">
-                  {`${appointment.firstName} ${appointment.lastInitial}`}
+                  {`${appointment.patientId.givenName} ${appointment.patientId.familyName}`}
                 </TableCell>
-                <TableCell align="right">{appointment.attending}</TableCell>
-                <TableCell align="right">{appointment.time}</TableCell>
+                <TableCell align="right">{appointment.checkedIn ? "Checked-In" : "Not Checked-In"}</TableCell>
+                <TableCell align="right">{appointment.time.start}</TableCell>
               </TableRow>
             ))}
           </TableBody>

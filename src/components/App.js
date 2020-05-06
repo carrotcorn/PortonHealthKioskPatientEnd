@@ -13,11 +13,8 @@ function App() {
   useEffect(() => {
     const fetchUser = async () => {
       try {
-        const response = await getCurrentUser();
-        if (response.success) {
-          console.log(response.result);
-          setUser(response.result);
-        }
+        const userData = await getCurrentUser();
+        setUser(userData);
         setLoading(false);
       } catch (e) {
         console.log(e);
