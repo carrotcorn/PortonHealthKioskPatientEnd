@@ -8,6 +8,7 @@ import {
 } from "../../form-fields/FormInputHandlers";
 import { UserContext } from "../../Contexts";
 import { getClinicByOwner, checkInAppointment } from "../../../util/API";
+import { Redirect } from "react-router-dom";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
@@ -16,6 +17,7 @@ function CheckInForm({ appointment }) {
   const { register, handleSubmit, errors, control } = useForm();
   const [formFields, setFormFields] = useState();
   const [submissionStatusText, setSubmissionStatusText] = useState();
+  const [isCheckedIn, setIsCheckedIn] = useState();
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -43,13 +45,23 @@ function CheckInForm({ appointment }) {
       setSubmissionStatusText("");
       const checkInResponse = await checkInAppointment(appointment._id);
       if (checkInResponse.success) {
-        console.log(checkInResponse);
-        setSubmissionStatusText("yay you're checked in :D");
+        setIsCheckedIn(true);
       } else {
-        setSubmissionStatusText("there was an error checking you in :(");
+        setSubmissionStatusText("There was an error checking you in :(");
       }
     }
   };
+
+  if (isCheckedIn) {
+    return (
+      <Redirect
+        to={{
+          pathname: "/confirmation",
+          state: { appointment },
+        }}
+      />
+    );
+  }
 
   return formFields ? (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
@@ -62,6 +74,7 @@ function CheckInForm({ appointment }) {
             name,
             key: index,
             classes: { root: styles.input },
+            autoComplete: "off",
           })
         )}
       </div>
