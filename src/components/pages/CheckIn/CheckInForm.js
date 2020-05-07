@@ -4,12 +4,7 @@ import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import formInputFactory from "../../form-fields/FormInputFactory";
 import { UserContext } from "../../Contexts";
-import {
-  getUserCheckInFields,
-  getDefaultCheckInFields,
-  getAllCheckInFields,
-  getClinicByOwner
-} from "../../../util/API";
+import { getClinicByOwner } from "../../../util/API";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
@@ -18,40 +13,18 @@ function CheckInForm() {
   const { register, handleSubmit, errors, control } = useForm();
   const [formFields, setFormFields] = useState();
   const { user } = useContext(UserContext);
-  const [state, setState] = React.useState();
 
   useEffect(() => {
     (async () => {
-    try {
-      const clinicData = await getClinicByOwner(user._id);
-      const userFields = clinicData.formFields || [];            
-      console.log(userFields);
-      let configuredInputIds = new Set();
-      for (let userField of userFields) {
-        configuredInputIds.add(userField._id);
+      try {
+        const clinicData = await getClinicByOwner(user._id);
+        const userFields = clinicData.formFields || [];
+        setFormFields(userFields);
+      } catch (e) {
+        console.log(e.message);
       }
-      let fields = await getAllCheckInFields() || [];
-      
-      setState(
-        fields.map((field) => ({
-          ...field,
-          active: configuredInputIds.has(field._id),
-        }))
-      );
-
-      if (fields) {
-        setFormFields(fields);
-      } else {
-        setFormFields(getDefaultCheckInFields());
-      }
-      console.log(formFields);
-
-    }
-    catch (e) {
-      console.log(e.message);
-    }
-    })();    
-  }, []);
+    })();
+  }, [user._id]);
 
   const onSubmit = (data) => {
     console.log(data);
