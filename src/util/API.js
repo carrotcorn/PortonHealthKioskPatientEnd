@@ -1,6 +1,11 @@
 /* global Backend */
 const backend = new Backend("http://localhost:7001");
 
+// have the backend do this if time
+export const checkInAppointment = async (id) => {
+  return backend.post("/appointment/checkin", { conditions: { _id: id } });
+};
+
 export const getUserCheckInFields = async (id) => {
   let fields;
 
@@ -77,6 +82,7 @@ export const getAppointmentsByClinic = async (id, startTime, endTime) => {
   const response = await backend.post("/appointment/find", {
     conditions: {
       clinicId: id,
+      checkedIn: { $exists: false },
       "time.start": { $gte: startTime, $lte: endTime },
     },
   });

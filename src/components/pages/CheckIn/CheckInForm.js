@@ -7,7 +7,7 @@ import {
   validatePatientInfo,
 } from "../../form-fields/FormInputHandlers";
 import { UserContext } from "../../Contexts";
-import { getClinicByOwner } from "../../../util/API";
+import { getClinicByOwner, checkInAppointment } from "../../../util/API";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
@@ -30,7 +30,7 @@ function CheckInForm({ appointment }) {
     })();
   }, [user._id]);
 
-  const onSubmit = (data) => {
+  const onSubmit = async (data) => {
     const validPatient = formFields
       .map(({ inputType, name }) =>
         validatePatientInfo(inputType, name, data[name], appointment.patientId)
@@ -41,6 +41,13 @@ function CheckInForm({ appointment }) {
       setSubmissionStatusText("Invalid Patient Info");
     } else {
       setSubmissionStatusText("");
+      const checkInResponse = await checkInAppointment(appointment._id);
+      if (checkInResponse.success) {
+        console.log(checkInResponse);
+        setSubmissionStatusText("yay you're checked in :D");
+      } else {
+        setSubmissionStatusText("there was an error checking you in :(");
+      }
     }
   };
 
