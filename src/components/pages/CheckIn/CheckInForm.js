@@ -1,17 +1,21 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
-import formInputFactory from "../../form-fields/FormInputFactory";
+import {
+  formInputFactory,
+  validatePatientInfo,
+} from "../../form-fields/FormInputHandlers";
 import { UserContext } from "../../Contexts";
 import { getClinicByOwner } from "../../../util/API";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
-function CheckInForm() {
+function CheckInForm({ appointment }) {
   const styles = useStyles();
   const { register, handleSubmit, errors, control } = useForm();
   const [formFields, setFormFields] = useState();
+  const [submissionStatusText, setSubmissionStatusText] = useState();
   const { user } = useContext(UserContext);
 
   useEffect(() => {
@@ -27,7 +31,17 @@ function CheckInForm() {
   }, [user._id]);
 
   const onSubmit = (data) => {
-    console.log(data);
+    const validPatient = formFields
+      .map(({ inputType, name }) =>
+        validatePatientInfo(inputType, name, data[name], appointment.patientId)
+      )
+      .reduce((prev, curr) => prev && curr, true);
+
+    if (!validPatient) {
+      setSubmissionStatusText("Invalid Patient Info");
+    } else {
+      setSubmissionStatusText("");
+    }
   };
 
   return formFields ? (
@@ -43,6 +57,9 @@ function CheckInForm() {
             classes: { root: styles.input },
           })
         )}
+      </div>
+      <div>
+        <Typography color="error">{submissionStatusText}</Typography>
       </div>
       <div>
         <Button

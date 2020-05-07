@@ -48,7 +48,7 @@ export default function CheckInDialog({ appointment, open, handleClose }) {
           </Typography>
         </Toolbar>
       </AppBar>
-      <CheckInForm />
+      <CheckInForm appointment={appointment} />
     </Dialog>
   );
 }
