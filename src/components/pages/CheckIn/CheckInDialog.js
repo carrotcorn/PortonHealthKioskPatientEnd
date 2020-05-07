@@ -41,7 +41,10 @@ export default function CheckInDialog({ appointment, open, handleClose }) {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {`Please confirm you are ${appointment.firstName} ${appointment.lastInitial}`}
+            {appointment &&
+              `Please confirm you are ${
+                appointment.patientId.givenName
+              } ${appointment.patientId.familyName.charAt(0)}.`}
           </Typography>
         </Toolbar>
       </AppBar>
