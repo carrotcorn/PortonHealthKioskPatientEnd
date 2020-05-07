@@ -1,17 +1,6 @@
 /* global Backend */
 const backend = new Backend("http://localhost:7001");
 
-export const getAllCheckInFields = async () => {
-  let fields;
-
-  const response = await backend.get("/checkinformfield/find");
-
-  if (response.success) fields = response.result;
-  else throw response.error;
-
-  return fields;
-};
-
 export const getUserCheckInFields = async (id) => {
   let fields;
 
@@ -23,48 +12,6 @@ export const getUserCheckInFields = async (id) => {
   else throw response.error;
 
   return fields;
-};
-
-/**
- *
- * @param {Array} fields - array of field objects {inputType, name, label}
- */
-export const setUserCheckInFields = async (clinic, fields) => {
-  console.log(fields);
-  const response = await backend.put("/clinic/update", {
-    conditions: { _id: clinic._id },
-    doc: { formFields: fields },
-  });
-
-  if (response.success) fields = response.result.formFields;
-  else throw response.error;
-
-  console.log(response.result);
-
-  return fields;
-};
-
-// input types
-const FIRST_NAME = "FIRST_NAME";
-const LAST_NAME = "LAST_NAME";
-const BIRTHDAY = "BIRTHDAY";
-const STREET_ADDRESS = "STREET_ADDRESS";
-const CITY = "CITY";
-const PROVINCE = "PROVINCE";
-const POSTAL_CODE = "POSTAL_CODE";
-
-const CHECK_IN_FIELDS = "CHECK_IN_FIELDS";
-
-// These would be automatically set when the clinic user is first created
-export const getDefaultCheckInFields = async () => {
-  localStorage.setItem(
-    CHECK_IN_FIELDS,
-    JSON.stringify([
-      { inputType: LAST_NAME, name: "lastName", label: "Last Name" },
-      { inputType: BIRTHDAY, name: "birthday", label: "Birthday" },
-    ])
-  );
-  return getUserCheckInFields();
 };
 
 export const getCurrentUser = async () => {
