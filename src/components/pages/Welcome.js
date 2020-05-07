@@ -7,9 +7,7 @@ import LocalHospital from "@material-ui/icons/LocalHospital";
 import Person from "@material-ui/icons/Person";
 import { Link } from "react-router-dom";
 import { UserContext } from "../Contexts";
-import { 
-  getClinicByOwner
-} from "../../util/API";
+import { getClinicByOwner } from "../../util/API";
 import { CircularProgress } from "@material-ui/core";
 
 const useStyles = makeStyles({
@@ -46,10 +44,10 @@ function Welcome() {
         try {
           const clinicData = await getClinicByOwner(user._id);
           setClinic(clinicData);
-          setLoading(false);
         } catch (e) {
           console.log(e);
         }
+        setLoading(false);
       }
     };
     fetchClinic();

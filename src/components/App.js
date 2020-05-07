@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { Route, Switch } from "react-router-dom";
-import { Welcome, CheckIn, Appointment, Login } from "./pages";
+import { Welcome, CheckIn, Confirmation, Login } from "./pages";
 import Layout from "./Layout";
 import { getCurrentUser } from "../util/API";
 import PrivateRoute from "../util/PrivateRoute";
 import { UserContext } from "./Contexts";
+import { CircularProgress } from "@material-ui/core";
 
 function App() {
   const [user, setUser] = useState();
@@ -15,13 +16,17 @@ function App() {
       try {
         const userData = await getCurrentUser();
         setUser(userData);
-        setLoading(false);
       } catch (e) {
         console.log(e);
       }
+      setLoading(false);
     };
     fetchUser();
   }, []);
+
+  if (loading) {
+    return <CircularProgress />;
+  }
 
   return (
     <UserContext.Provider value={{ user, setUser }}>
@@ -34,8 +39,8 @@ function App() {
           <PrivateRoute path="/checkin">
             <CheckIn />
           </PrivateRoute>
-          <PrivateRoute path="/appointment">
-            <Appointment />
+          <PrivateRoute path="/confirmation">
+            <Confirmation />
           </PrivateRoute>
         </Switch>
       </Layout>

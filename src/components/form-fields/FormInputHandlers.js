@@ -8,6 +8,7 @@ import {
   Province,
   PostalCode,
 } from ".";
+import { isSameDay } from "date-fns/esm";
 
 // input types
 const FIRST_NAME = "FIRST_NAME";
@@ -18,7 +19,7 @@ const CITY = "CITY";
 const PROVINCE = "PROVINCE";
 const POSTAL_CODE = "POSTAL_CODE";
 
-export default function formInputFactory(inputType, { errors, name, ...rest }) {
+export function formInputFactory(inputType, { errors, name, ...rest }) {
   switch (inputType) {
     case FIRST_NAME:
       return <FirstName errors={errors[name]} name={name} {...rest} />;
@@ -36,5 +37,30 @@ export default function formInputFactory(inputType, { errors, name, ...rest }) {
       return <PostalCode errors={errors[name]} name={name} {...rest} />;
     default:
       throw Error("invalid form input type");
+  }
+}
+
+// returns true if value matches the fieldName in patientInfo (move to backend if time permits)
+export function validatePatientInfo(inputType, fieldName, value, patientInfo) {
+  switch (inputType) {
+    case FIRST_NAME:
+    case LAST_NAME:
+      return value.toUpperCase() === patientInfo[fieldName].toUpperCase();
+    case BIRTHDAY:
+      const calendarDate = patientInfo[fieldName].split("T")[0];
+      const year = calendarDate.split("-")[0];
+      const month = Number(calendarDate.split("-")[1]) - 1;
+      const day = calendarDate.split("-")[2];
+      return isSameDay(value, new Date(year, month, day));
+    case STREET_ADDRESS:
+    case CITY:
+    case PROVINCE:
+    case POSTAL_CODE:
+      return (
+        patientInfo.address[fieldName].toUpperCase() ===
+        value.trim().toUpperCase()
+      );
+    default:
+      throw Error(`invalid input type: ${inputType}`);
   }
 }

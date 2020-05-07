@@ -1,6 +1,6 @@
-import Appointment from "./Appointment";
 import CheckIn from "./CheckIn/CheckIn";
 import Welcome from "./Welcome";
 import Login from "./Login";
+import Confirmation from "./Confirmation";
 
-export { Appointment, CheckIn, Welcome, Login };
+export { Confirmation, CheckIn, Welcome, Login };

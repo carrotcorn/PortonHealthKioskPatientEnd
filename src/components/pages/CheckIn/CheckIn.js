@@ -8,12 +8,10 @@ import {
   TableHead,
   TableRow,
   TableContainer,
-  Button,
 } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { format, addMinutes, subMinutes } from "date-fns";
 import CheckInDialog from "./CheckInDialog";
-import FormFieldDialog from "./FormFieldDialog";
 import { UserContext } from "../../Contexts";
 import {
   getClinicByOwner,
@@ -45,7 +43,7 @@ function CheckIn() {
   }, [user._id]);
 
   // dialog management
-  const [selectedAppointment, setSelectedAppointment] = useState({});
+  const [selectedAppointment, setSelectedAppointment] = useState();
   const [isDialogOpen, setIsDialogOpen] = useState(false);
 
   const handleCloseDialog = () => {
@@ -76,7 +74,7 @@ function CheckIn() {
               <TableRow
                 classes={{ root: styles.tableRow }}
                 hover
-                key={appointment.id}
+                key={appointment._id}
                 onClick={() => handleClick(appointment)}
               >
                 <TableCell component="th" scope="row">

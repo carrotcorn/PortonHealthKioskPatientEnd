@@ -1,61 +1,67 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, CircularProgress } from "@material-ui/core";
+import { Button, CircularProgress, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
-import formInputFactory from "../../form-fields/FormInputFactory";
-import { UserContext } from "../../Contexts";
 import {
-  getUserCheckInFields,
-  getDefaultCheckInFields,
-  getAllCheckInFields,
-  getClinicByOwner
-} from "../../../util/API";
+  formInputFactory,
+  validatePatientInfo,
+} from "../../form-fields/FormInputHandlers";
+import { UserContext } from "../../Contexts";
+import { getClinicByOwner, checkInAppointment } from "../../../util/API";
+import { Redirect } from "react-router-dom";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
-function CheckInForm() {
+function CheckInForm({ appointment }) {
   const styles = useStyles();
   const { register, handleSubmit, errors, control } = useForm();
   const [formFields, setFormFields] = useState();
+  const [submissionStatusText, setSubmissionStatusText] = useState();
+  const [isCheckedIn, setIsCheckedIn] = useState();
   const { user } = useContext(UserContext);
-  const [state, setState] = React.useState();
 
   useEffect(() => {
     (async () => {
-    try {
-      const clinicData = await getClinicByOwner(user._id);
-      const userFields = clinicData.formFields || [];            
-      console.log(userFields);
-      let configuredInputIds = new Set();
-      for (let userField of userFields) {
-        configuredInputIds.add(userField._id);
+      try {
+        const clinicData = await getClinicByOwner(user._id);
+        const userFields = clinicData.formFields || [];
+        setFormFields(userFields);
+      } catch (e) {
+        console.log(e.message);
       }
-      let fields = await getAllCheckInFields() || [];
-      
-      setState(
-        fields.map((field) => ({
-          ...field,
-          active: configuredInputIds.has(field._id),
-        }))
-      );
+    })();
+  }, [user._id]);
 
-      if (fields) {
-        setFormFields(fields);
+  const onSubmit = async (data) => {
+    const validPatient = formFields
+      .map(({ inputType, name }) =>
+        validatePatientInfo(inputType, name, data[name], appointment.patientId)
+      )
+      .reduce((prev, curr) => prev && curr, true);
+
+    if (!validPatient) {
+      setSubmissionStatusText("Invalid Patient Info");
+    } else {
+      setSubmissionStatusText("");
+      const checkInResponse = await checkInAppointment(appointment._id);
+      if (checkInResponse.success) {
+        setIsCheckedIn(true);
       } else {
-        setFormFields(getDefaultCheckInFields());
+        setSubmissionStatusText("There was an error checking you in :(");
       }
-      console.log(formFields);
-
     }
-    catch (e) {
-      console.log(e.message);
-    }
-    })();    
-  }, []);
-
-  const onSubmit = (data) => {
-    console.log(data);
   };
+
+  if (isCheckedIn) {
+    return (
+      <Redirect
+        to={{
+          pathname: "/confirmation",
+          state: { appointment },
+        }}
+      />
+    );
+  }
 
   return formFields ? (
     <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
@@ -68,8 +74,12 @@ function CheckInForm() {
             name,
             key: index,
             classes: { root: styles.input },
+            autoComplete: "off",
           })
         )}
+      </div>
+      <div>
+        <Typography color="error">{submissionStatusText}</Typography>
       </div>
       <div>
         <Button
