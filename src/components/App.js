@@ -6,6 +6,7 @@ import { getCurrentUser } from "../util/API";
 import PrivateRoute from "../util/PrivateRoute";
 import { UserContext } from "./Contexts";
 import LoadingScreen from "../util/LoadingScreen";
+import PageNotFound from "../util/PageNotFound";
 
 function App() {
   const [user, setUser] = useState();
@@ -42,6 +43,7 @@ function App() {
           <PrivateRoute path="/confirmation">
             <Confirmation />
           </PrivateRoute>
+          <Route path="*" component={PageNotFound} />
         </Switch>
       </Layout>
     </UserContext.Provider>
