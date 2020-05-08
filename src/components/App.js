@@ -5,7 +5,7 @@ import Layout from "./Layout";
 import { getCurrentUser } from "../util/API";
 import PrivateRoute from "../util/PrivateRoute";
 import { UserContext } from "./Contexts";
-import { CircularProgress } from "@material-ui/core";
+import LoadingScreen from "../util/LoadingScreen";
 
 function App() {
   const [user, setUser] = useState();
@@ -25,7 +25,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   return (

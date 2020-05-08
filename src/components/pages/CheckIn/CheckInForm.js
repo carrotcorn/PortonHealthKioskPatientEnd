@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Button, CircularProgress, Typography } from "@material-ui/core";
+import { Button, Typography } from "@material-ui/core";
 import { makeStyles } from "@material-ui/core/styles";
 import { useForm } from "react-hook-form";
 import {
@@ -9,6 +9,7 @@ import {
 import { UserContext } from "../../Contexts";
 import { getClinicByOwner, checkInAppointment } from "../../../util/API";
 import { Redirect } from "react-router-dom";
+import LoadingScreen from "../util/LoadingScreen";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
@@ -93,7 +94,7 @@ function CheckInForm({ appointment }) {
       </div>
     </form>
   ) : (
-    <CircularProgress />
+    <LoadingScreen />
   );
 }
 
