@@ -9,7 +9,7 @@ import {
 import { UserContext } from "../../Contexts";
 import { getClinicByOwner, checkInAppointment } from "../../../util/API";
 import { Redirect } from "react-router-dom";
-import LoadingScreen from "../util/LoadingScreen";
+import LoadingScreen from "../../../util/LoadingScreen";
 
 // Warning in strict mode https://github.com/mui-org/material-ui/issues/13394
 
