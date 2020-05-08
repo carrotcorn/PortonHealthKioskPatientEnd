@@ -101,13 +101,17 @@ function CheckInForm({ appointment }) {
 const useStyles = makeStyles((theme) => ({
   form: {
     margin: "30px auto 0",
-    maxWidth: "700px",
+    width: "100%",
   },
   inputContainer: {
     display: "flex",
     flexDirection: "column",
+    maxWidth: "500px",
+    margin: "0 auto",
+    paddingRight: theme.spacing(2),
   },
   input: {
+    width: "100%",
     minWidth: "300px",
     margin: theme.spacing(1),
   },
