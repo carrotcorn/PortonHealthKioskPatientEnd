@@ -79,7 +79,7 @@ function CheckInForm({ appointment }) {
           })
         )}
       </div>
-      <div>
+      <div className={styles.inputContainer}>
         <Typography color="error">{submissionStatusText}</Typography>
       </div>
       <div>
