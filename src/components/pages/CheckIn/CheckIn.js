@@ -60,6 +60,9 @@ function CheckIn() {
       <Typography variant="h4" align="center">
         Please Select an Appointment
       </Typography>
+      <Typography variant="h5" align="center">
+        {format(new Date(), "PPpp")}
+      </Typography>
       <TableContainer className={styles.table} component={Paper}>
         <Table aria-label="simple table">
           <TableHead>

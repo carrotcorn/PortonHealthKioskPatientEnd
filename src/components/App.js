@@ -5,7 +5,8 @@ import Layout from "./Layout";
 import { getCurrentUser } from "../util/API";
 import PrivateRoute from "../util/PrivateRoute";
 import { UserContext } from "./Contexts";
-import { CircularProgress } from "@material-ui/core";
+import LoadingScreen from "../util/LoadingScreen";
+import PageNotFound from "../util/PageNotFound";
 
 function App() {
   const [user, setUser] = useState();
@@ -25,7 +26,7 @@ function App() {
   }, []);
 
   if (loading) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   return (
@@ -42,6 +43,7 @@ function App() {
           <PrivateRoute path="/confirmation">
             <Confirmation />
           </PrivateRoute>
+          <Route path="*" component={PageNotFound} />
         </Switch>
       </Layout>
     </UserContext.Provider>

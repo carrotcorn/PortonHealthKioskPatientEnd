@@ -7,6 +7,7 @@ import {
   IconButton,
   Typography,
   Slide,
+  Box,
 } from "@material-ui/core";
 import CheckInForm from "./CheckInForm";
 import CloseIcon from "@material-ui/icons/Close";
@@ -18,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
   title: {
     marginLeft: theme.spacing(2),
     flex: 1,
+  },
+  content: {
+    paddingTop: "30px",
   },
 }));
 
@@ -41,14 +45,19 @@ export default function CheckInDialog({ appointment, open, handleClose }) {
             <CloseIcon />
           </IconButton>
           <Typography variant="h6" className={classes.title}>
-            {appointment &&
-              `Please confirm you are ${
-                appointment.patientId.givenName
-              } ${appointment.patientId.familyName.charAt(0)}.`}
+            Check In
           </Typography>
         </Toolbar>
       </AppBar>
-      <CheckInForm appointment={appointment} />
+      <Box className={classes.content}>
+        <Typography variant="h6" className={classes.title} align="center">
+          {appointment &&
+            `Please confirm you are ${
+              appointment.patientId.givenName
+            } ${appointment.patientId.familyName.charAt(0)}.`}
+        </Typography>
+        <CheckInForm appointment={appointment} />
+      </Box>
     </Dialog>
   );
 }

@@ -8,7 +8,7 @@ import Person from "@material-ui/icons/Person";
 import { Link } from "react-router-dom";
 import { UserContext } from "../Contexts";
 import { getClinicByOwner } from "../../util/API";
-import { CircularProgress } from "@material-ui/core";
+import LoadingScreen from "../../util/LoadingScreen";
 
 const useStyles = makeStyles({
   page: {
@@ -54,7 +54,7 @@ function Welcome() {
   }, [user]);
 
   if (loading || !clinic) {
-    return <CircularProgress />;
+    return <LoadingScreen />;
   }
 
   return (
